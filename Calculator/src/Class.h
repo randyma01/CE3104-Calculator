@@ -11,6 +11,7 @@
 class Class {
 public:
 	Class();
+
 	virtual ~Class();
 };
 
