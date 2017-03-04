@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+//#include <QtGui/QPushButton>
+//#include <QtGui/QLabel>
 #include <vector>
 #include <string>
 #include <stdio.h>
@@ -11,7 +13,7 @@
 #include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#include <io.h> // Error: <unistd.h> No such file or directory find //
 #include <cstdlib>
 #include <cstring>
 
@@ -22,17 +24,30 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow{
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    vector<int> triplets; /*Vector for the Triplets*/
+    vector<vector<int>> resultTriplet; /*Vector for the resulted operation.*/
+    vector<vector<int>> polynomial; /*Vector for the Triplets Vectors*/
+    string number; /*Variable for keeping all the numbers being inserted in the each triplet.*/
+    string answers; /*Variable for keeping the last result calculated.*/
+    string operation = "NONE"; /*Variable for making the operation.*/
+
+    vector<vector<vector<int>>> operands; /*vector for operands to be used*/
+
+    void clearInput();
+
+    void verifyTriplets(vector<vector<int>> polynomialA, vector<vector<int>> polynomialB);
+    void verifyTripletsMulti(vector<vector<int>> polynomialA, vector<vector<int>> polynomialB);
+
 private slots:
     /*
-     * Number Button
+     * Number Button and Negative Sign: insertion.
      */
     void on_num0_pressed();
     void on_num1_pressed();
@@ -44,28 +59,33 @@ private slots:
     void on_num7_pressed();
     void on_num8_pressed();
     void on_num9_pressed();
+    void on_negative_pressed();
+
 
     /*
      * Operations Button
      */
-    void on_addition_pressed();
-    void on_subtraction_pressed();
-    void on_multiplication_pressed();
-    void on_result_pressed();
-
+    void on_addition_pressed(); //sum
+    void on_subtraction_pressed();//substraction
+    void on_multiplication_pressed();//product
+    void on_result_pressed();// result
 
     /*
-     * Other Button
+     * Operations Actions
      */
-    void on_evaluate_pressed();
-    void on_clearCancel_pressed();
-    void on_clear_pressed();
-    void on_spaceBlank_pressed();
+    void addition();
+    void substraction();
+    void muplitply();
+
+    /*
+     * Other Button: Calculator Actions
+     */
+    void on_evaluate_pressed();//evualtion
+    void on_clearCancel_pressed();//cancel
+    void on_clear_pressed(); //clear
+    void on_spaceBlank_pressed();//space
     void on_separatorBar_pressed();
 
-
-
-    void on_negative_pressed();
 
 private:
     Ui::MainWindow *ui;
