@@ -34,6 +34,7 @@ public:
     vector<int> triplets; /*Vector for the Triplets*/
     vector<vector<int>> resultTriplet; /*Vector for the resulted operation.*/
     vector<vector<int>> polynomial; /*Vector for the Triplets Vectors*/
+    vector<int> eval;
     string number; /*Variable for keeping all the numbers being inserted in the each triplet.*/
     string answers; /*Variable for keeping the last result calculated.*/
     string operation = "NONE"; /*Variable for making the operation.*/
@@ -76,6 +77,7 @@ private slots:
     void addition();
     void substraction();
     void muplitply();
+    void evaluation();
 
     /*
      * Other Button: Calculator Actions
@@ -86,6 +88,8 @@ private slots:
     void on_spaceBlank_pressed();//space
     void on_separatorBar_pressed();
 
+
+    void on_spaceBlank_Eval_pressed();
 
 private:
     Ui::MainWindow *ui;

@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
     ui->setupUi(this);
+    ui->spaceBlank_Eval->setVisible(false);
 }
 
 
@@ -200,7 +201,11 @@ void MainWindow::on_separatorBar_pressed(){
  * @brief MainWindow::on_addition_pressed
  */
 void MainWindow::on_addition_pressed(){
-    operation = "ADDITION"; /*Changes operation action message to sum.*/
+//    polynomial.push_back(triplets); /*Inserts the triplet on the polynomial.*/
+//    triplets.clear(); /*Clears the triplet.*/
+//    numberSpaces = 0;
+
+    operation = "SUM"; /*Changes operation action message to sum.*/
     ui->result->setEnabled(true);  /*Enables the equal action button.*/
     operands.push_back(polynomial); /*Inserts the polynomial on the operands.*/
     clearInput();
@@ -214,6 +219,10 @@ void MainWindow::on_addition_pressed(){
  * @brief MainWindow::on_subtraction_pressed
  */
 void MainWindow::on_subtraction_pressed(){
+//    polynomial.push_back(triplets); /*Inserts the triplet on the polynomial.*/
+//    triplets.clear(); /*Clears the triplet.*/
+//    numberSpaces = 0;
+
     operation = "SUBSTRACTION"; /*Changes operation action message to susbtraction.*/
     ui->result->setEnabled(true);  /*Enables the equal action button.*/
     operands.push_back(polynomial); /*Inserts the polynomial on the operands.*/
@@ -237,6 +246,13 @@ void MainWindow::on_multiplication_pressed(){
 
 
 void MainWindow::on_evaluate_pressed(){
+    clearInput();
+    ui->spaceBlank->setVisible(false);
+    ui->spaceBlank->setEnabled(false);
+    ui->result->setEnabled(true);  /*Enables the equal action button.*/
+    ui->spaceBlank_Eval->setEnabled(true);
+    ui->spaceBlank_Eval->setVisible(true);
+    operation = "EVAL";
 
 }
 
@@ -250,29 +266,37 @@ void MainWindow::on_evaluate_pressed(){
  * @brief MainWindow::on_result_pressed
  */
 void MainWindow::on_result_pressed(){
-    if (operation == "ADDITION"){
-       // polynomial.clear(); /*Clears the polynomial vector.*/
-        //operation = "NONE"; /*Sets operation to NONE.*/
+    if (operation == "SUM"){
+
         operands.push_back(polynomial); /*Inserts the polynomial on the operands.*/
         clearInput();
         polynomial.clear();         /*Clear the polynomial*/
 
         addition(); /*Calls for the adition method.*/
+        ui->result->setEnabled(false);  /*Enables the equal action button.*/
     }
     if(operation == "SUBSTRACTION"){
         operands.push_back(polynomial); /*Inserts the polynomial on the operands.*/
         clearInput();
         polynomial.clear();         /*Clear the polynomial*/
-
         substraction(); /*Calls for the substraction method.*/
-
-        //operation = "NONE"; /*Sets operation to NONE.*/
+        ui->result->setEnabled(false);  /*Enables the equal action button.*/
     }
     if(operation == "MULTIPLY"){
         operands.push_back(polynomial); /*Inserts the polynomial on the operands.*/
         clearInput();
         polynomial.clear();         /*Clear the polynomial*/
         muplitply(); /*Calls for the multiply method.*/
+        ui->result->setEnabled(false);  /*Enables the equal action button.*/
+    }
+    if(operation == "EVAL"){
+        clearInput();     /*Clear the polynomial*/
+        evaluation(); /*Calls for the multiply method.*/
+        ui->spaceBlank->setVisible(true);
+        ui->spaceBlank->setEnabled(true);
+        ui->result->setEnabled(false);  /*Enables the equal action button.*/
+        ui->spaceBlank_Eval->setEnabled(false);
+        ui->spaceBlank_Eval->setVisible(false);
        // operation = "NONE"; /*Sets operation to NONE.*/
     }
 }
@@ -281,37 +305,73 @@ void MainWindow::on_result_pressed(){
 
 
 void MainWindow::addition(){
-    //caso que las operaciones se realicen solo con dos polinomios
-    verifyTriplets(operands[0], operands[1]);
-//    //recorre el vector que contiene los polinomios a sumar
-//    //en caso que se puedan realizar operaciones con mas de dos polinomios
-//    while((int)operands.size() != 0){
-//        verifyTripletsSum(operands[0], operands[1]);
-//        operands.erase(0);
-//        operands.erase(0);
-//        if((int)operands.size() == 1){
-//            cout << "termino la operacion";
-//        }
-//    }
+    if((int)operands.size() > 2){
+        verifyTriplets(operands[0], operands[1]);
+        clearInput();
+        verifyTriplets(resultTriplet, operands[2]);
+    }
+    else{//caso que las operaciones se realicen solo con dos polinomios
+        verifyTriplets(operands[0], operands[1]);
+    }
 }
 
 void MainWindow::substraction(){
-    //caso que las operaciones se realicen solo con dos polinomios
-    verifyTriplets(operands[0], operands[1]);
+    if((int)operands.size() > 2){
+        verifyTriplets(operands[0], operands[1]);
+        clearInput();
+        verifyTriplets(resultTriplet, operands[2]);
+    }
+    else{//caso que las operaciones se realicen solo con dos polinomios
+        verifyTriplets(operands[0], operands[1]);
+    }
 }
 
 void MainWindow::muplitply(){
     verifyTripletsMulti(operands[0], operands[1]);
+    operation = "SUM";
+    verifyTriplets(operands[0], operands[1]);
+}
+
+void MainWindow::evaluation(){
+    vector<int> triplets;
+    int result = 0;
+    int b = eval[0];
+    int c = eval[1];
+    for(int i=0; i < (int)polynomial.size(); i++){
+       triplets = polynomial[i];
+       result += (triplets[0]) * pow(b, triplets[1]) * pow(c,triplets[2]);
+    }
+    //se limpia el vector polinomio para ser usado por otra operacion
+    //se limpia el vector eval que contiene los valores de 'x' ^ 'y'
+    polynomial.clear();
+    eval.clear();
+
+    //mostrar el resultado en pantalla
+    ui->lineEdit->insert(QString::number(result));
+
 }
 
 /*****CALCULATOR ACTIONS*****/
-void MainWindow::on_clearCancel_pressed()
-{
-
+void MainWindow::on_clearCancel_pressed(){
+    operation = "NONE";
+    triplets.clear();
+    polynomial.clear();
+    operands.clear();
+    eval.clear();
+    clearInput();
+    numberSpaces = 0;
+    ui->spaceBlank->setEnabled(true);
+    ui->spaceBlank_Eval->setEnabled(false);
+    ui->spaceBlank->setVisible(true);
+    ui->spaceBlank_Eval->setVisible(false);
 }
 
 void MainWindow::on_clear_pressed(){
-
+    triplets.clear();
+    polynomial.clear();
+    eval.clear();
+    clearInput();
+    numberSpaces = 0;
 }
 
 void MainWindow::clearInput(){
@@ -324,6 +384,10 @@ void MainWindow::verifyTriplets(vector<vector<int>> polynomialA, vector<vector<i
     vector<int> tripletsA;
     int a;
 
+    if(!resultTriplet.empty()){
+        resultTriplet.clear();
+    }
+
     for(int i=0; i<(int)polynomialA.size(); i++){
 
         //obtiene la primer tripleta del polinomio A
@@ -334,7 +398,7 @@ void MainWindow::verifyTriplets(vector<vector<int>> polynomialA, vector<vector<i
 
         while(true){
             //si no encuentra valores identicos, agrega la tripleta al vector resultado
-            if(j > (int)polynomialB.size()){
+            if(j >= (int)polynomialB.size()){
                 resultTriplet.push_back(tripletsA);
                 break;
             }
@@ -343,7 +407,7 @@ void MainWindow::verifyTriplets(vector<vector<int>> polynomialA, vector<vector<i
             //y se agrega el resultado al vectorRespuesta
             //**borra la tripleta del polinomio B(ya no son necesarias)
             if(polynomialB[j][1] == b && polynomialB[j][2] == c){
-                if(operation ==  "ADDITION"){
+                if(operation ==  "SUM"){
                     a = tripletsA[0] + polynomialB[j][0];
                 }
                 if(operation == "SUBSTRACTION"){
@@ -365,15 +429,21 @@ void MainWindow::verifyTriplets(vector<vector<int>> polynomialA, vector<vector<i
     //agrega las tripletas del polinomio B que no fueron borradas
     //al vector de resultados
     for(int l = 0; l < (int)polynomialB.size(); l++){
+        if(operation == "SUBSTRACTION"){
+            polynomialB[l][0] =  polynomialB[l][0] * -1;
+        }
         resultTriplet.push_back(polynomialB[l]);
     }
 
-    cout << "ternima la funcion verif" << endl;
-    cout << "resultado de la suma: \n" ;
+    //muestra el resultado en pantalla
     for(int i = 0; i<(int)resultTriplet.size(); i++){
         if(resultTriplet[i][0] != 0){
-            cout << resultTriplet[i][0] << "x^" << resultTriplet[i][1] << "y^" << resultTriplet[i][2] << " ";
-
+            ui->lineEdit->insert(QString::number(resultTriplet[i][0]));
+            ui->lineEdit->insert(" ");
+            ui->lineEdit->insert(QString::number(resultTriplet[i][1]));
+            ui->lineEdit->insert(" ");
+            ui->lineEdit->insert(QString::number(resultTriplet[i][2]));
+            ui->lineEdit->insert(" | ");
         }
     }
 }
@@ -381,10 +451,12 @@ void MainWindow::verifyTriplets(vector<vector<int>> polynomialA, vector<vector<i
 
 void MainWindow::verifyTripletsMulti(vector<vector<int> > polynomialA, vector<vector<int> > polynomialB){
     //vector donde guardara los polinomios generados debido a la multiplicacion
-    vector<vector<vector<int>>> operands_aux;
+    //vector<vector<vector<int>>> operands_aux;
     //donde se guarda el polinomio que se va formando
     vector<vector<int>> polynomial_aux;
     vector<int> tripletsA;
+
+    operands.clear();
 
 
     for(int i=0; i<(int)polynomialA.size(); i++){
@@ -405,28 +477,15 @@ void MainWindow::verifyTripletsMulti(vector<vector<int> > polynomialA, vector<ve
         }
         //se guarda el polinomio en el vector auxiliar
         //se limpia el polinomio para guardar los otros
-        operands_aux.push_back(polynomial_aux);
+        operands.push_back(polynomial_aux);
         polynomial_aux.clear();
     }
-    cout << "termino de multiplicar" << endl;
+}
 
-    for(int i = 0; i < (int)operands_aux.size(); i++){
-        for(int j=0; j < (int)operands_aux[i].size(); j++){
-            cout << operands_aux[i][j][0] << operands_aux[i][j][1] << operands_aux[i][j][2] << " | ";
-        }
-    }
 
-//    //cuando termina
-//    //se pasa la operacion suma para simplificar el resultado
-//    //en caso que el polinomioA sea mayor a 2 tripletas
-//    //verificar y pasar todos los polinomios
-//    operation = "ADDITION";
-//    verifyTriplets(operands_aux[0], operands_aux[1]);
-
-//    //caso de que el polinomioA sea de 3 tripletas
-//    //se generan tres polinomios
-//    //caso de que sean mas, se requiere de un ciclo
-//    if((int)operands_aux.size() > 2){
-//        verifyTriplets(resultTriplet, operands_aux[2]);
-//    }
+void MainWindow::on_spaceBlank_Eval_pressed(){
+    eval.push_back(atoi(number.c_str())); /*Inserts the  number on the triplet.*/
+    QString space= " ";
+    number.clear();
+    ui->lineEdit->insert(space); /*Shows a space on screen.*/
 }

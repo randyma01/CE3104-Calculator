@@ -400,6 +400,22 @@
      <string>-</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="spaceBlank_Eval">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>310</y>
+      <width>71</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>space</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -411,6 +427,9 @@
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
