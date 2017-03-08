@@ -360,6 +360,7 @@ void MainWindow::on_clearCancel_pressed(){
     eval.clear();
     clearInput();
     numberSpaces = 0;
+    ui->separatorBar->setEnabled(false);
     ui->spaceBlank->setEnabled(true);
     ui->spaceBlank_Eval->setEnabled(false);
     ui->spaceBlank->setVisible(true);
@@ -367,11 +368,21 @@ void MainWindow::on_clearCancel_pressed(){
 }
 
 void MainWindow::on_clear_pressed(){
-    triplets.clear();
-    polynomial.clear();
-    eval.clear();
-    clearInput();
-    numberSpaces = 0;
+    if(operation == "EVAL"){
+        eval.clear();
+        clearInput();
+        ui->spaceBlank->setEnabled(false);
+        ui->spaceBlank_Eval->setEnabled(true);
+        ui->spaceBlank->setVisible(false);
+        ui->spaceBlank_Eval->setVisible(true);
+    }
+    else{
+        triplets.clear();
+        polynomial.clear();
+        eval.clear();
+        clearInput();
+        numberSpaces = 0;
+    }
 }
 
 void MainWindow::clearInput(){
